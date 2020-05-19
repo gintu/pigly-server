@@ -7,12 +7,19 @@ app.use(cors());
 
 io.on("connection", socket => {
   console.log("a user is connected");
-  socket.emit("news", { hello: "world" });
+  // socket.emit("news", { hello: "world" });
+  socket.on("join", data => {
+    socket.broadcast.emit(`new user, ${data.name} has joined the chat`);
+
+    console.log(data);
+  });
+  socket.on("chat message", msg => {
+    console.log(msg);
+    io.emit("from server", msg);
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
-  });
-  socket.on("my other event", data => {
-    console.log(data);
   });
 });
 
