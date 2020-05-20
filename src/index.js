@@ -10,12 +10,12 @@ io.on("connection", socket => {
   console.log("a user is connected");
 
   socket.on("join", data => {
-    // socket.broadcast.emit("from server", {
-    //   message: `${data.name} has joined the chat`,
-    //   sentBy: "admin",
-    //   id: uuid.v4(),
-    //   room: data.room
-    // });
+    socket.broadcast.emit("from server", {
+      message: `${data.name} has joined the chat`,
+      sentBy: "admin",
+      id: uuid.v4(),
+      room: data.room
+    });
 
     console.log(data);
   });
@@ -24,13 +24,24 @@ io.on("connection", socket => {
     io.emit("from server", msg);
   });
 
-  socket.on("disconnect", name => {
-    // socket.broadcast.emit("from server", {
-    //   message: `${name} has joined the chat`,
-    //   sentBy: "admin",
-    //   id: uuid.v4(),
-    //   room: ""
-    // });
+  // socket.on("disconnect user", name => {
+  //   socket.broadcast.emit("from server", {
+  //     message: `${name} has left the chat`,
+  //     sentBy: "admin",
+  //     id: uuid.v4(),
+  //     room: ""
+  //   });
+
+  //   console.log("user is disonnected");
+  // });
+
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("from server", {
+      message: `someone has left the chat`,
+      sentBy: "admin",
+      id: uuid.v4(),
+      room: ""
+    });
 
     console.log("user is disonnected");
   });
