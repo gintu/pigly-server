@@ -24,12 +24,12 @@ io.on("connection", socket => {
   });
 
   socket.on("chat message", data => {
-    console.log(data);
     io.in(data.room).emit("from server", data);
   });
 
   socket.on("disconnect", () => {
     console.log(userData);
+    console.log("user disconnected");
     io.in(userData.room).emit("from server", {
       message: `${userData.name} has left the chat`,
       sentBy: "admin",
