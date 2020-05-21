@@ -7,46 +7,37 @@ let uuid = require("uuid");
 app.use(cors());
 
 io.on("connection", socket => {
-  console.log("a user is connected");
+  console.log("a user connected");
 
-  socket.on("join", data => {
-    socket.broadcast.emit("from server", {
-      message: `${data.name} has joined the chat`,
-      sentBy: "admin",
-      id: uuid.v4(),
-      room: data.room
+  let userData = {};
+
+  socket.on("join room", data => {
+    userData = { ...data };
+    socket.join(data.room, () => {
+      io.to(data.room).emit("from server", {
+        message: `${data.name} has joined the chat`,
+        sentBy: "admin",
+        id: uuid.v4(),
+        room: data.room
+      });
     });
+  });
 
+  socket.on("chat message", data => {
     console.log(data);
+    io.in(data.room).emit("from server", data);
   });
-  socket.on("chat message", msg => {
-    console.log(msg);
-    io.emit("from server", msg);
-  });
-
-  // socket.on("disconnect user", name => {
-  //   socket.broadcast.emit("from server", {
-  //     message: `${name} has left the chat`,
-  //     sentBy: "admin",
-  //     id: uuid.v4(),
-  //     room: ""
-  //   });
-
-  //   console.log("user is disonnected");
-  // });
 
   socket.on("disconnect", () => {
-    socket.broadcast.emit("from server", {
-      message: `someone has left the chat`,
+    console.log(userData);
+    io.in(userData.room).emit("from server", {
+      message: `${userData.name} has left the chat`,
       sentBy: "admin",
       id: uuid.v4(),
-      room: ""
+      room: userData.room
     });
-
-    console.log("user is disonnected");
   });
 });
-
 http.listen(3000, () => {
   console.log("listening on *:3000");
 });
