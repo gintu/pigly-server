@@ -1,22 +1,11 @@
 let app = require("express")();
-let cors = require("cors");
-app.use(cors());
+
 let http = require("http").createServer(app);
 let io = require("socket.io")(http, { origins: "*:*" });
+let cors = require("cors");
 
 let uuid = require("uuid");
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
 app.use(cors());
-
 io.on("connection", socket => {
   console.log("a user connected");
 
@@ -49,6 +38,7 @@ io.on("connection", socket => {
     });
   });
 });
-http.listen(3000, () => {
+
+io.listen(3000, () => {
   console.log("listening on *:3000");
 });
