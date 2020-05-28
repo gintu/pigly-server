@@ -1,6 +1,6 @@
 let app = require("express")();
 let http = require("http").createServer(app);
-let io = require("socket.io")(http);
+let io = require("socket.io")(http, { origins: "*:*" });
 let cors = require("cors");
 let uuid = require("uuid");
 
