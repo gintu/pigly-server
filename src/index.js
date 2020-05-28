@@ -4,7 +4,13 @@ let io = require("socket.io")(http);
 let cors = require("cors");
 let uuid = require("uuid");
 
-app.use(cors());
+app.use(
+  cors({
+    allowedHeaders: ["Content-Type"],
+    origin: "*",
+    preflightContinue: true
+  })
+);
 
 io.on("connection", socket => {
   console.log("a user connected");
